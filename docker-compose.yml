@@ -1,0 +1,45 @@
+version: '3.6'
+services:
+
+  # PostgreSQL
+  postgres:
+    container_name: postgres
+    build: ./postgres
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_URL: postgres://admin:password@localhost:5432/payment-api
+      POSTGRES_DB: payment-api
+      POSTGRES_HOST: postgres
+    ports:
+      - "5432:5432"
+
+  # Redis
+  redis:
+    container_name: redis
+    hostname: redis
+    image: redis
+
+  redis-commander:
+    container_name: redis-commander
+    hostname: redis-commander
+    image: rediscommander/redis-commander:latest
+    restart: always
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - "8091:8081"
+
+  # Back
+  payment-api:
+    container_name: backend
+    build: ./
+    volumes:
+      - ./:/usr/src/payment-api
+    command: npm start
+    working_dir: /usr/src/payment-api
+    ports:
+      - "3000:3000"
+    environment:
+      POSTGRES_URI: postgres://admin:password@postgres:5432/payment-api
+      REDIS_URI: redis://redis:6379

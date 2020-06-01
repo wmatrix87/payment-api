@@ -1,0 +1,13 @@
+.DS_Store
+.idea
+.nyc_output
+.vscode
+yarn-error.log
+*.log
+node_modules
+dist
+workspace/**/dist
+workspace/**/yarn.lock
+# Keep .gitkeep files
+!/**/.gitkeep
+
