@@ -2,10 +2,10 @@ BEGIN TRANSACTION;
 
 CREATE TABLE payments (
     id serial PRIMARY KEY,
-    payeeId VARCHAR(100),
-    payerId VARCHAR(100),
-    paymentSystem VARCHAR(100),
-    paymentMethod VARCHAR(100),
+    payee_id VARCHAR(100),
+    payer_id VARCHAR(100),
+    payment_system VARCHAR(100),
+    payment_method VARCHAR(100),
     amount VARCHAR(100),
     currency VARCHAR(100),
     status VARCHAR(100),

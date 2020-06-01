@@ -1,4 +1,4 @@
-version: '3.6'
+version: '3.7'
 services:
 
   # PostgreSQL
@@ -13,6 +13,14 @@ services:
       POSTGRES_HOST: postgres
     ports:
       - "5432:5432"
+  adminer:
+    image: adminer
+    restart: always
+    environment:
+      - ADMINER_DEFAULT_SERVER=postgres
+      - ADMINER_DESIGN=nette
+    ports:
+      - 8092:8080
 
   # Redis
   redis:
