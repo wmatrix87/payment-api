@@ -12,8 +12,8 @@ jobs:
       - image: circleci/node:12.17.0
       steps:
         - checkout
-        - run: echo "testing"
-        - run: npm test
+        - run: echo "npm installing"
+        - run: npm install
 
 workflows:
   version: 2.1
