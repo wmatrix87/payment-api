@@ -13,6 +13,7 @@ jobs:
     steps:
       - checkout
       - run: echo "npm test"
+      - run: npm install
       - run: npm test
 
 workflows:
