@@ -13,25 +13,25 @@ const paymentValidationRules = () => [
   body('amount').exists().withMessage('\'amount\' field is required'),
   body('currency').exists().withMessage('\'currency\' field is required'),
   body('comment').exists().withMessage('\'comment\' field is required'),
-]
+];
 
 const validate = (req, res, next) => {
-  const errors = validationResult(req)
+  const errors = validationResult(req);
   if (errors.isEmpty()) {
-    return next()
+    return next();
   }
-  const extractedErrors = []
-  errors.array().map(err => extractedErrors.push({ message: err.msg, path: err.param }))
-  
+  const extractedErrors = [];
+  errors.array().map((err) => extractedErrors.push({ message: err.msg, path: err.param }));
+
   return res.status(422).json({
     code: 'ERR_VALIDATION',
     massage: 'Validation failed',
     details: extractedErrors,
-  })
-}
+  });
+};
 
 module.exports = {
   paymentParamValidationRules,
   paymentValidationRules,
   validate,
-}
+};
