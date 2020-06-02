@@ -1,14 +1,14 @@
 const express = require('express');
-const router = express.Router();
 const bcrypt = require('bcrypt-nodejs');
+const db = require('../db');
 
-const db =  require('../db');
+const router = express.Router();
 
 const signin = require('../controllers/signin');
 const register = require('../controllers/register');
 const auth = require('../controllers/authorization');
 const { createPayment, getPayments, getPayment } = require('../controllers/payments');
-const { paymentParamValidationRules, paymentValidationRules, validate } = require('../controllers/validator')
+const { paymentParamValidationRules, paymentValidationRules, validate } = require('../controllers/validator');
 
 /* GET home page. */
 router.get('/v1', auth.requireAuth, (req, res) => res.send('payment api'));

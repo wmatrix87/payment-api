@@ -15,29 +15,38 @@ const paymentsCamelCase = (payments) => payments.map(paymentCamelCase);
 
 const getPayments = async (req, res, db) => {
   try {
-
-    const result = await db.select('*').from('payments')
+    const result = await db.select('*').from('payments');
     res.json(paymentsCamelCase(result));
   } catch (e) {
-    console.error('Error: ', e.message);
-    res.status(400).json(e)
+    // console.error('Error: ', e.message);
+    res.status(400).json(e);
   }
-}
+};
 
 const getPayment = async (req, res, db) => {
   try {
     const { id } = req.params;
-    const result = await db.select('*').from('payments').where('id', '=', parseInt(id));
+    const result = await db.select('*')
+      .from('payments')
+      .where('id', '=', parseInt(id, 10));
     res.json(paymentCamelCase(result[0]));
   } catch (e) {
-    console.error('Error: ', e.message);
-    res.status(400).json(e)
+    // console.error('Error: ', e.message);
+    res.status(400).json(e);
   }
-}
+};
 
 const createPayment = async (req, res, db) => {
-  const { payeeId, payerId, paymentSystem, paymentMethod, amount, currency, comment } = req.body;
-  
+  const {
+    payeeId,
+    payerId,
+    paymentSystem,
+    paymentMethod,
+    amount,
+    currency,
+    comment,
+  } = req.body;
+
   try {
     const result = await db
       .returning('id')
@@ -52,15 +61,15 @@ const createPayment = async (req, res, db) => {
         created: currentDate(),
         updated: currentDate(),
       }).into('payments');
-    res.json(result[0] || undefined)
+    res.json(result[0] || undefined);
   } catch (e) {
-    console.error('Error: ', e.message);
-    res.status(400).json(e)
+    // console.error('Error: ', e.message);
+    res.status(400).json(e);
   }
-}
+};
 
 module.exports = {
   getPayments,
   getPayment,
   createPayment,
-}
+};

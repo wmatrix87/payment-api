@@ -1,4 +1,4 @@
-const redisClient = require('./signin').redisClient;
+const { redisClient } = require('./signin');
 
 const requireAuth = (req, res, next) => {
   const { authorization } = req.headers;
@@ -8,7 +8,7 @@ const requireAuth = (req, res, next) => {
       message: 'No auth token provided',
     });
   }
-  
+
   const token = authorization.startsWith('Bearer ') ? authorization.substring(7, authorization.length) : authorization;
 
   return redisClient.get(token, (err, reply) => {
@@ -23,5 +23,5 @@ const requireAuth = (req, res, next) => {
 };
 
 module.exports = {
-  requireAuth
-}
+  requireAuth,
+};

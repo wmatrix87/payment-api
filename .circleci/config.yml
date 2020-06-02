@@ -1,11 +1,20 @@
 version: 2.1
 jobs:
-  master:
+  build:
     docker:
-      - image: circleci/node:12.17.0 # the primary container, where your job's commands are run
+      - image: circleci/node:12.17.0
     steps:
-      - checkout # check out the code in the project directory
-      - run: echo "hello world!" # run the `echo` command
+      - checkout
+      - run: echo "npm installing"
+      - run: npm install
+  test:
+    docker:
+      - image: circleci/node:12.17.0
+      steps:
+        - checkout
+        - run: echo "testing"
+        - run: npm test
+
 workflows:
   version: 2.1
   build:
