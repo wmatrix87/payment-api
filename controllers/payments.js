@@ -18,7 +18,6 @@ const getPayments = async (req, res, db) => {
     const result = await db.select('*').from('payments');
     res.json(paymentsCamelCase(result));
   } catch (e) {
-    // console.error('Error: ', e.message);
     res.status(400).json(e);
   }
 };
@@ -31,7 +30,6 @@ const getPayment = async (req, res, db) => {
       .where('id', '=', parseInt(id, 10));
     res.json(paymentCamelCase(result[0]));
   } catch (e) {
-    // console.error('Error: ', e.message);
     res.status(400).json(e);
   }
 };
@@ -55,7 +53,8 @@ const createPayment = async (req, res, db) => {
         payer_id: payerId,
         payment_system: paymentSystem,
         payment_method: paymentMethod,
-        amount,
+        status: 'created',
+        amount: parseFloat(parseFloat(amount || 0).toFixed(2)),
         currency,
         comment,
         created: currentDate(),
@@ -63,13 +62,75 @@ const createPayment = async (req, res, db) => {
       }).into('payments');
     res.json(result[0] || undefined);
   } catch (e) {
-    // console.error('Error: ', e.message);
     res.status(400).json(e);
   }
 };
+
+const approvePayment = async (req, res, db) => {
+  const { id } = req.params;
+  
+  try {
+    const payment = await db.select('*')
+      .from('payments')
+      .where('id', '=', parseInt(id, 10));
+    if (!payment || !payment.length) {
+      res.status(400).json({
+        code: 'ERR_CANNOT_APPROVE',
+        message: 'Payment does not exist',
+      });
+    } else if (payment[0].status === 'canceled') {
+      res.status(400).json({
+        code: 'ERR_CANNOT_APPROVE',
+        message: 'Cannot approve payment already been canceled',
+      });
+    }
+    
+    await db
+      .where('id', id)
+      .whereNot('status', 'canceled')
+      .update({ status: 'approved' })
+      .into('payments');
+  } catch (e) {
+    res.status(400).json(e);
+  }
+  
+  res.send();
+}
+
+const cancelPayment = async (req, res, db) => {
+  const { id } = req.params;
+  try {
+    const payment = await db.select('*')
+      .from('payments')
+      .where('id', '=', parseInt(id, 10));
+    if (!payment || !payment.length) {
+      res.status(400).json({
+        code: 'ERR_CANNOT_CANCEL',
+        message: 'Payment does not exist',
+      });
+    } else if (payment[0].status === 'approved') {
+      res.status(400).json({
+        code: 'ERR_CANNOT_CANCEL',
+        message: 'Cannot cancel payment already been approved',
+      });
+    }
+    await db
+      .where('id', id)
+      .whereNot('status', 'approved')
+      .update({ status: 'canceled' })
+      .into('payments');
+  } catch (e) {
+    res.status(400).json(e);
+  }
+  
+  
+  res.send();
+}
 
 module.exports = {
   getPayments,
   getPayment,
   createPayment,
+  approvePayment,
+  cancelPayment,
 };
