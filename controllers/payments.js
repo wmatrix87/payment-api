@@ -68,7 +68,7 @@ const createPayment = async (req, res, db) => {
 
 const approvePayment = async (req, res, db) => {
   const { id } = req.params;
-  
+
   try {
     const payment = await db.select('*')
       .from('payments')
@@ -84,7 +84,7 @@ const approvePayment = async (req, res, db) => {
         message: 'Cannot approve payment already been canceled',
       });
     }
-    
+
     await db
       .where('id', id)
       .whereNot('status', 'canceled')
@@ -93,9 +93,9 @@ const approvePayment = async (req, res, db) => {
   } catch (e) {
     res.status(400).json(e);
   }
-  
+
   res.send();
-}
+};
 
 const cancelPayment = async (req, res, db) => {
   const { id } = req.params;
@@ -122,10 +122,9 @@ const cancelPayment = async (req, res, db) => {
   } catch (e) {
     res.status(400).json(e);
   }
-  
-  
+
   res.send();
-}
+};
 
 module.exports = {
   getPayments,
